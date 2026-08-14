@@ -1,0 +1,1156 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #050505;
+    color: white;
+}
+
+
+/* =========================================================
+   MAIN APP
+========================================================= */
+
+#app {
+
+    position: relative;
+
+    width: 100%;
+    height: 100vh;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            rgba(0,0,0,0.48),
+            rgba(0,0,0,0.68)
+        ),
+        url("/assets/background.jpg")
+        center center /
+        cover
+        no-repeat;
+
+}
+
+
+/* =========================================================
+   TOP NAVIGATION
+========================================================= */
+
+.top-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 90px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 48px;
+
+    z-index: 50;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0,0,0,0.55),
+            transparent
+        );
+}
+
+
+/* category buttons */
+
+.category-btn {
+
+    position: relative;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    color:
+        rgba(255,255,255,0.48);
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    letter-spacing: 2.5px;
+
+    cursor: pointer;
+
+    padding:
+        12px 0;
+
+    transition:
+        color .25s ease;
+}
+
+
+.category-btn:hover {
+
+    color: white;
+
+}
+
+
+.category-btn.active {
+
+    color: white;
+
+}
+
+
+.category-btn.active::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    bottom: 0;
+
+    height: 2px;
+
+    background: white;
+
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+
+.hero {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    z-index: 5;
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    /* transform: translateY(-20px); */
+}
+
+
+/* Number */
+
+.hero-rank {
+    margin-bottom: 22px;
+
+    font-size: 12px;
+
+    letter-spacing: 6px;
+
+    color: rgba(255,255,255,0.7);
+}
+
+
+/* Round music icon */
+
+.hero-content::before {
+    content: "♪";
+
+    width: 72px;
+    height: 72px;
+
+    margin-bottom: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(255,255,255,0.35);
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.08);
+
+    /* backdrop-filter: blur(10px); */
+
+    color: white;
+
+    font-size: 32px;
+
+    box-shadow:
+        0 0 30px rgba(255,255,255,0.08);
+}
+
+
+/* MUSIC */
+
+.hero h1 {
+    margin: 0;
+
+    font-size: clamp(75px, 10vw, 145px);
+
+    line-height: 0.9;
+
+    font-weight: 700;
+
+    letter-spacing: 12px;
+
+    color: white;
+}
+
+
+/* Subtitle */
+
+.hero p {
+    margin-top: 28px;
+
+    font-size: 11px;
+
+    letter-spacing: 8px;
+
+    color: rgba(255,255,255,0.7);
+}
+
+
+/* =========================================================
+   PLAYLIST PANEL
+========================================================= */
+
+.playlist-panel {
+
+    position: absolute;
+
+    top: 120px;
+
+    right: 3%;
+
+    width: 420px;
+
+    z-index: 30;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.18);
+
+    border-radius: 24px;
+
+    background:
+        rgba(8,8,8,0.90);
+/* 
+    backdrop-filter:
+        blur(18px);
+
+    -webkit-backdrop-filter:
+        blur(18px); */
+
+    overflow: hidden;
+
+}
+
+
+/* =========================================================
+   PLAYLIST HEADER
+========================================================= */
+
+.playlist-header {
+
+    min-height: 105px;
+
+    padding:
+        22px 25px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    cursor: pointer;
+
+}
+
+
+.playlist-label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 5px;
+
+    color:
+        rgba(255,255,255,0.45);
+
+}
+
+
+.playlist-header h2 {
+
+    font-size: 30px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+}
+
+
+.playlist-header-right {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+}
+
+
+#playlistCount {
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
+    color:
+        rgba(255,255,255,0.48);
+
+}
+
+
+/* =========================================================
+   + BUTTON
+========================================================= */
+
+.playlist-toggle {
+
+    width: 38px;
+    height: 38px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.35);
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,0.04);
+
+    color: white;
+
+    font-size: 24px;
+
+    cursor: pointer;
+
+    /* transition:
+        transform .3s ease,
+        background .2s ease; */
+
+}
+
+
+.playlist-toggle:hover {
+
+    background:
+        rgba(255,255,255,0.12);
+
+}
+
+
+/* =========================================================
+   PLAYLIST CONTENT
+========================================================= */
+
+.playlist-content {
+
+    max-height: 0;
+
+    opacity: 0;
+
+    overflow: hidden;
+
+    transition:
+        max-height .4s ease,
+        opacity .25s ease;
+
+}
+
+
+.playlist-panel.open
+.playlist-content {
+
+    max-height: 520px;
+
+    opacity: 1;
+
+    overflow-y: auto;
+
+}
+
+
+.playlist-panel.open
+.playlist-toggle {
+
+    transform:
+        rotate(45deg);
+
+}
+
+
+/* =========================================================
+   SONG LIST
+========================================================= */
+
+.playlist-items {
+
+    padding:
+        0 12px 15px;
+
+}
+
+
+.playlist-song {
+
+    min-height: 70px;
+
+    display: grid;
+
+    grid-template-columns:
+        40px
+        minmax(0,1fr)
+        45px;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding:
+        8px 12px;
+
+    border-radius: 14px;
+
+    cursor: pointer;
+
+    /* transition:
+        background .2s ease; */
+
+}
+
+
+.playlist-song:hover {
+
+    background:
+        rgba(255,255,255,0.07);
+
+}
+
+
+/* =========================================================
+   SONG NUMBER
+========================================================= */
+
+.song-number {
+
+    font-size: 11px;
+
+    text-align: center;
+
+    color:
+        rgba(255,255,255,0.38);
+
+}
+
+
+/* =========================================================
+   SONG DETAILS
+========================================================= */
+
+.song-details {
+
+    min-width: 0;
+
+}
+
+
+.song-title {
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    color: white;
+
+}
+
+
+.song-artist {
+
+    margin-top: 5px;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+    font-size: 10px;
+
+    color:
+        rgba(255,255,255,0.42);
+
+}
+
+
+/* =========================================================
+   SONG PLAY BUTTON
+========================================================= */
+
+.song-play {
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,0.08);
+
+    color: white;
+
+    font-size: 11px;
+
+}
+
+
+.playlist-song:hover
+.song-play {
+
+    background:
+        rgba(255,255,255,0.18);
+
+}
+
+
+/* =========================================================
+   CURRENT PLAYING SONG
+========================================================= */
+
+.playlist-song.active {
+
+    background:
+        rgba(255,255,255,0.14);
+
+}
+
+
+.playlist-song.active
+.song-number {
+
+    color: white;
+
+}
+
+
+.playlist-song.active
+.song-play {
+
+    background: white;
+
+    color: #111;
+
+}
+
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+.playlist-content::-webkit-scrollbar {
+
+    width: 4px;
+
+}
+
+
+.playlist-content::-webkit-scrollbar-track {
+
+    background: transparent;
+
+}
+
+
+.playlist-content::-webkit-scrollbar-thumb {
+
+    background:
+        rgba(255,255,255,0.25);
+
+    border-radius: 10px;
+
+}
+
+
+/* =========================================================
+   MUSIC PLAYER
+========================================================= */
+
+/* =========================================================
+   COMPACT MUSIC PLAYER
+========================================================= */
+
+.music-player {
+    position: absolute;
+
+    left: 50%;
+    bottom: 28px;
+
+    transform: translateX(-50%);
+
+    width: 560px;
+    height: 105px;
+
+    padding: 16px 20px;
+
+    z-index: 40;
+
+    border: 1px solid rgba(255,255,255,0.16);
+
+    border-radius: 20px;
+
+    background: rgba(12,8,6,0.94);
+
+    backdrop-filter: blur(14px);
+
+    overflow: hidden;
+}
+
+
+/* SONG */
+
+.player-song {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    width: 55%;
+}
+
+
+.player-icon {
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.09);
+
+    font-size: 21px;
+}
+
+
+.player-info {
+    min-width: 0;
+}
+
+
+.player-title {
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+
+.player-artist {
+    margin-top: 4px;
+
+    font-size: 9px;
+
+    color: rgba(255,255,255,0.45);
+}
+
+
+/* CONTROLS */
+
+.player-controls {
+    position: absolute;
+
+    right: 18px;
+    top: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+
+.player-controls button {
+    border: none;
+
+    background: transparent;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+
+.player-controls .main-play {
+    width: 48px;
+    height: 48px;
+
+    border: 1px solid rgba(255,255,255,0.55);
+
+    border-radius: 50%;
+
+    font-size: 17px;
+}
+
+
+/* PROGRESS */
+
+.progress-area {
+    position: absolute;
+
+    left: 20px;
+    right: 20px;
+
+    bottom: 14px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+}
+
+
+.progress-area span {
+    font-size: 8px;
+
+    color: rgba(255,255,255,0.55);
+}
+
+
+.progress {
+    height: 4px;
+
+    flex: 1;
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,0.18);
+
+    cursor: pointer;
+}
+
+
+.progress-bar {
+    width: 0%;
+
+    height: 100%;
+
+    border-radius: 10px;
+
+    background: white;
+}
+
+
+/* song */
+
+.player-song {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+}
+
+
+.player-icon {
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,0.10);
+
+    font-size: 25px;
+
+}
+
+
+.player-info {
+
+    min-width: 0;
+
+    flex: 1;
+
+}
+
+
+.player-title {
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+}
+
+
+.player-artist {
+
+    margin-top: 5px;
+
+    font-size: 10px;
+
+    color:
+        rgba(255,255,255,0.45);
+
+}
+
+
+/* =========================================================
+   PLAYER CONTROLS
+========================================================= */
+
+.player-controls {
+
+    position: absolute;
+
+    right: 20px;
+
+    top: 25px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+}
+
+
+.player-controls button {
+
+    border: none;
+
+    background: transparent;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+}
+
+
+.player-controls
+.main-play {
+
+    width: 50px;
+    height: 50px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.65);
+
+    border-radius: 50%;
+
+    font-size: 18px;
+
+}
+
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+.progress-area {
+
+    margin-top: 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+.progress-area span {
+
+    font-size: 9px;
+
+    color:
+        rgba(255,255,255,0.55);
+
+}
+
+
+.progress {
+
+    position: relative;
+
+    height: 4px;
+
+    flex: 1;
+
+    border-radius: 10px;
+
+    background:
+        rgba(255,255,255,0.18);
+
+    cursor: pointer;
+
+}
+
+
+.progress-bar {
+
+    width: 0%;
+
+    height: 100%;
+
+    border-radius: 10px;
+
+    background: white;
+
+}
+
+
+/* =========================================================
+   HIDDEN YOUTUBE
+========================================================= */
+
+.youtube-player {
+
+    position: fixed;
+
+    width: 1px;
+    height: 1px;
+
+    left: -100px;
+    top: -100px;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status {
+
+    position: fixed;
+
+    left: 50%;
+
+    bottom: 20px;
+
+    transform:
+        translateX(-50%);
+
+    padding:
+        8px 15px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(0,0,0,0.8);
+
+    font-size: 10px;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    z-index: 100;
+
+}
+
+
+.status.show {
+
+    opacity: 1;
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .top-nav {
+
+        gap: 18px;
+
+        padding: 0 20px;
+
+        overflow-x: auto;
+
+    }
+
+    .category-btn {
+
+        font-size: 11px;
+
+        white-space: nowrap;
+
+    }
+
+    .hero {
+
+        width: 100%;
+
+        align-items: flex-start;
+
+        padding-top: 180px;
+
+    }
+
+    .hero h1 {
+
+        font-size: 30px;
+
+    }
+
+    .playlist-panel {
+
+        top: auto;
+
+        bottom: 160px;
+
+        right: 15px;
+
+        left: 15px;
+
+        width: auto;
+
+    }
+
+    .music-player {
+
+        width: calc(100% - 30px);
+
+        bottom: 15px;
+
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .hero h1 {
+
+        font-size: 25px;
+
+        letter-spacing: 5px;
+
+    }
+
+    .hero p {
+
+        font-size: 9px;
+
+        letter-spacing: 4px;
+
+    }
+
+    .music-player {
+
+        padding: 15px;
+
+    }
+
+}

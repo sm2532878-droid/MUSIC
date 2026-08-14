@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Music</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+
+<body>
+
+<div id="app">
+
+    <!-- =========================================
+         TOP NAVIGATION
+    ========================================== -->
+
+    <nav class="top-nav">
+
+        <button
+            class="category-btn active"
+            data-category="trending">
+            PURULIA
+        </button>
+
+        <button
+            class="category-btn"
+            data-category="old">
+            OLD SONGS
+        </button>
+
+        <button
+            class="category-btn"
+            data-category="new">
+            NEW SONGS
+        </button>
+
+        <button
+            class="category-btn"
+            data-category="dance">
+            DANCE SONGS
+        </button>
+
+        <button
+            class="category-btn"
+            data-category="bengali">
+            BENGALI SONGS
+        </button>
+
+    </nav>
+
+
+    <!-- =========================================
+         HERO
+    ========================================== -->
+
+    <main class="hero">
+
+        <div class="hero-content">
+
+            <!-- <div class="hero-rank" id="heroRank">
+            </div> -->
+
+            <h1>
+                MUSIC
+            </h1>
+
+            <p>
+                YOUR MUSIC JOURNEY
+            </p>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================================
+         PLAYLIST
+    ========================================== -->
+
+    <section
+        class="playlist-panel"
+        id="playlistPanel">
+
+        <!-- Playlist Header -->
+
+        <div
+            class="playlist-header"
+            id="playlistHeader">
+
+            <div>
+
+                <span class="playlist-label">
+                    MUSIC
+                </span>
+
+                <h2 id="playlistTitle">
+                    PURULIA
+                </h2>
+
+            </div>
+
+
+            <div class="playlist-header-right">
+
+                <span id="playlistCount">
+                    23 TRACKS
+                </span>
+
+                <button
+                    class="playlist-toggle"
+                    id="playlistToggle">
+                    +
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- Playlist Content -->
+
+        <div
+            class="playlist-content"
+            id="playlistContent">
+
+            <div
+                class="playlist-items"
+                id="playlistItems">
+
+                <div class="playlist-loading">
+                    LOADING...
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         MUSIC PLAYER
+    ========================================== -->
+
+    <section class="music-player">
+
+        <div class="player-song">
+
+            <div class="player-icon">
+                ♪
+            </div>
+
+            <div class="player-info">
+
+                <div
+                    id="trackTitle"
+                    class="player-title">
+                    Music
+                </div>
+
+                <div
+                    id="trackArtist"
+                    class="player-artist">
+                    YouTube Music
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="player-controls">
+
+            <button id="previousBtn">
+                ◀
+            </button>
+
+            <button
+                id="playBtn"
+                class="main-play">
+                ▶
+            </button>
+
+            <button id="nextBtn">
+                ▶
+            </button>
+
+            <button id="volumeBtn">
+                🔊
+            </button>
+
+        </div>
+
+
+        <div class="progress-area">
+
+            <span id="currentTime">
+                00:00
+            </span>
+
+            <div
+                class="progress"
+                id="progress">
+
+                <div
+                    class="progress-bar"
+                    id="progressBar">
+                </div>
+
+            </div>
+
+            <span id="duration">
+                00:00
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         HIDDEN YOUTUBE PLAYER
+    ========================================== -->
+
+  <div id="youtube-player" class="youtube-player"></div>
+
+<div id="playlist-loader" class="youtube-player"></div>
+
+
+    <!-- =========================================
+         STATUS
+    ========================================== -->
+
+    <div
+        id="status"
+        class="status">
+    </div>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
