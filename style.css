@@ -1068,89 +1068,533 @@ body {
    MOBILE
 ========================================================= */
 
+/* =========================================================
+   MOBILE RESPONSIVE
+========================================================= */
+
 @media (max-width: 900px) {
 
-    .top-nav {
-
-        gap: 18px;
-
-        padding: 0 20px;
-
-        overflow-x: auto;
-
+    html,
+    body {
+        width: 100%;
+        min-height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
     }
 
-    .category-btn {
+    #app {
+        width: 100%;
+        min-height: 100vh;
+        height: auto;
 
-        font-size: 11px;
+        padding-bottom: 150px;
+
+        background-position: center center;
+    }
+
+
+    /* =====================================================
+       TOP NAVIGATION
+    ===================================================== */
+
+    .top-nav {
+        position: relative;
+
+        width: 100%;
+        height: 68px;
+
+        padding: 0 16px;
+
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+
+        gap: 24px;
+
+        overflow-x: auto;
+        overflow-y: hidden;
 
         white-space: nowrap;
 
+        scrollbar-width: none;
+
+        z-index: 100;
     }
 
+    .top-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .category-btn {
+        flex: 0 0 auto;
+
+        padding: 10px 0;
+
+        font-size: 10px;
+        letter-spacing: 1.8px;
+
+        white-space: nowrap;
+    }
+
+
+    /* =====================================================
+       HERO
+    ===================================================== */
+
     .hero {
+        position: relative;
 
         width: 100%;
+        height: 280px;
 
-        align-items: flex-start;
+        top: auto;
+        left: auto;
 
-        padding-top: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
+        text-align: center;
+
+        z-index: 10;
+    }
+
+    .hero-content {
+        width: 100%;
+        padding: 20px;
+        transform: translateY(-5px);
     }
 
     .hero h1 {
+        margin: 0;
 
-        font-size: 30px;
+        font-size: clamp(58px, 18vw, 90px);
 
+        line-height: 0.95;
+
+        letter-spacing: 5px;
+
+        white-space: nowrap;
     }
 
+    .hero p {
+        margin-top: 18px;
+
+        font-size: 8px;
+
+        letter-spacing: 4px;
+
+        white-space: nowrap;
+    }
+
+
+    /* =====================================================
+       PLAYLIST BOX
+    ===================================================== */
+
     .playlist-panel {
+        position: relative;
 
         top: auto;
+        right: auto;
+        left: auto;
 
-        bottom: 160px;
+        width: calc(100% - 28px);
 
-        right: 15px;
+        max-width: 520px;
 
-        left: 15px;
+        height: auto;
+
+        margin: 0 auto;
+
+        transform: none;
+
+        border-radius: 20px;
+
+        z-index: 50;
+    }
+
+
+    /* =====================================================
+       PLAYLIST HEADER
+    ===================================================== */
+
+    .playlist-header {
+        min-height: 82px;
+
+        padding: 18px 18px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 12px;
+    }
+
+    .playlist-label {
+        font-size: 8px;
+        letter-spacing: 4px;
+    }
+
+    .playlist-header h2 {
+        margin-top: 6px;
+
+        font-size: 21px;
+
+        line-height: 1.05;
+    }
+
+    .playlist-header-right {
+        gap: 8px;
+    }
+
+    #playlistCount {
+        font-size: 8px;
+
+        white-space: nowrap;
+    }
+
+    .playlist-toggle {
+        width: 34px;
+        height: 34px;
+
+        flex-shrink: 0;
+
+        font-size: 20px;
+    }
+
+
+    /* =====================================================
+       SEARCH
+    ===================================================== */
+
+    .playlist-search {
+        padding:
+            0 14px 12px;
+    }
+
+    .playlist-search input {
+        width: 100%;
+        height: 38px;
+
+        padding: 0 12px;
+
+        font-size: 11px;
+    }
+
+
+    /* =====================================================
+       PLAYLIST CONTENT
+    ===================================================== */
+
+    .playlist-content {
+        width: 100%;
+    }
+
+    .playlist-panel.open
+    .playlist-content {
+        max-height: 46vh;
+
+        overflow-y: auto;
+    }
+
+    .playlist-items {
+        padding:
+            0 8px 12px;
+    }
+
+
+    /* =====================================================
+       SONG
+    ===================================================== */
+
+    .playlist-song {
+        min-height: 62px;
+
+        grid-template-columns:
+            30px
+            minmax(0, 1fr)
+            38px;
+
+        gap: 7px;
+
+        padding:
+            7px 8px;
+
+        border-radius: 12px;
+    }
+
+    .song-number {
+        font-size: 9px;
+    }
+
+    .song-title {
+        font-size: 12px;
+    }
+
+    .song-artist {
+        margin-top: 4px;
+
+        font-size: 8px;
+    }
+
+    .song-play {
+        width: 32px;
+        height: 32px;
+
+        font-size: 9px;
+    }
+
+
+    /* =====================================================
+       MUSIC PLAYER
+    ===================================================== */
+
+    .music-player {
+        position: fixed;
+
+        left: 14px;
+        right: 14px;
+        bottom: 14px;
 
         width: auto;
 
+        height: 96px;
+
+        padding:
+            14px 14px;
+
+        transform: none;
+
+        z-index: 200;
+
+        border-radius: 18px;
     }
 
+
+    /* SONG INFO */
+
+    .player-song {
+        width: calc(100% - 170px);
+
+        gap: 10px;
+    }
+
+    .player-icon {
+        width: 38px;
+        height: 38px;
+
+        font-size: 18px;
+    }
+
+    .player-title {
+        font-size: 12px;
+    }
+
+    .player-artist {
+        font-size: 8px;
+    }
+
+
+    /* CONTROLS */
+
+    .player-controls {
+        position: absolute;
+
+        top: 18px;
+        right: 12px;
+
+        gap: 7px;
+    }
+
+    .player-controls button {
+        font-size: 12px;
+    }
+
+    .player-controls .main-play {
+        width: 40px;
+        height: 40px;
+
+        font-size: 14px;
+    }
+
+
+    /* PROGRESS */
+
+    .progress-area {
+        position: absolute;
+
+        left: 14px;
+        right: 14px;
+        bottom: 11px;
+
+        gap: 6px;
+    }
+
+    .progress-area span {
+        font-size: 7px;
+    }
+
+    .progress {
+        height: 3px;
+    }
+
+
+    /* =====================================================
+       STATUS
+    ===================================================== */
+
+    .status {
+        left: 50%;
+        bottom: 120px;
+
+        max-width: calc(100% - 30px);
+
+        text-align: center;
+
+        font-size: 8px;
+    }
+}
+
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .top-nav {
+        height: 62px;
+
+        padding: 0 12px;
+
+        gap: 20px;
+    }
+
+    .category-btn {
+        font-size: 9px;
+        letter-spacing: 1.4px;
+    }
+
+
+    .hero {
+        height: 240px;
+    }
+
+    .hero h1 {
+        font-size: 17vw;
+
+        letter-spacing: 4px;
+    }
+
+    .hero p {
+        font-size: 7px;
+        letter-spacing: 3px;
+    }
+
+
+    .playlist-panel {
+        width: calc(100% - 20px);
+    }
+
+    .playlist-header {
+        min-height: 76px;
+
+        padding: 15px;
+    }
+
+    .playlist-header h2 {
+        font-size: 19px;
+    }
+
+    #playlistCount {
+        display: none;
+    }
+
+
     .music-player {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
 
-        width: calc(100% - 30px);
+        height: 92px;
+    }
 
-        bottom: 15px;
+    .player-song {
+        width: calc(100% - 155px);
+    }
 
+    .player-icon {
+        width: 34px;
+        height: 34px;
+
+        font-size: 17px;
+    }
+
+    .player-title {
+        font-size: 11px;
+    }
+
+    .player-artist {
+        font-size: 7px;
+    }
+
+    .player-controls {
+        right: 8px;
+        top: 18px;
+
+        gap: 5px;
+    }
+
+    .player-controls .main-play {
+        width: 38px;
+        height: 38px;
     }
 
 }
 
 
-@media (max-width: 500px) {
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media (max-width: 360px) {
+
+    .top-nav {
+        gap: 16px;
+    }
+
+    .category-btn {
+        font-size: 8px;
+        letter-spacing: 1px;
+    }
 
     .hero h1 {
-
-        font-size: 25px;
-
-        letter-spacing: 5px;
-
+        font-size: 15vw;
     }
 
     .hero p {
-
-        font-size: 9px;
-
-        letter-spacing: 4px;
-
+        letter-spacing: 2px;
     }
 
-    .music-player {
+    .playlist-header h2 {
+        font-size: 17px;
+    }
 
-        padding: 15px;
+    .playlist-song {
+        grid-template-columns:
+            26px
+            minmax(0, 1fr)
+            34px;
+    }
 
+    .song-title {
+        font-size: 11px;
+    }
+
+    .song-play {
+        width: 29px;
+        height: 29px;
     }
 
 }
