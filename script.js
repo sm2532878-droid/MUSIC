@@ -1,26 +1,5 @@
-// ============================================================
-// MUSIC PLAYER
-// ============================================================
-// CATEGORY CLICK:
-//     - changes the visible playlist
-//     - DOES NOT stop current music
-//     - DOES NOT pause current music
-//
-// SONG CLICK:
-//     - plays the selected song
-//
-// MAIN MUSIC PLAYER:
-//     - used ONLY for actual playback
-//
-// TEMPORARY PLAYLIST LOADER:
-//     - used ONLY to read playlist contents
-// ============================================================
-
 
 // ============================================================
-// PLAYLISTS
-// ============================================================
-
 const PLAYLISTS = {
     trending: "PLTmJDWl7vURc",
     old: "PLB-99MR-0VKY",
@@ -39,12 +18,17 @@ const PLAYLIST_TITLES = {
 
 
 // ============================================================
-// GLOBAL STATE
+// STATE
 // ============================================================
 
+// Playlist currently shown on screen
 let currentCategory = "trending";
 
+// Main YouTube music player
 let player = null;
+
+// Temporary playlist loader
+let playlistLoader = null;
 
 let youtubeReady = false;
 
@@ -53,28 +37,53 @@ let isPlaying = false;
 let isMuted = false;
 
 
-// Current playlist shown in the UI
+// ------------------------------------------------------------
+// VISIBLE PLAYLIST
+// ------------------------------------------------------------
+
 let currentPlaylist = [];
 
 
-// Current playing video ID
+// ------------------------------------------------------------
+// ACTUALLY PLAYING PLAYLIST
+// ------------------------------------------------------------
+//
+// IMPORTANT:
+//
+// This does NOT change when the user clicks another category.
+//
+// Example:
+//
+// PURULIA song playing
+// user clicks OLD
+//
+// currentPlaylist = OLD
+// playingPlaylist = PURULIA
+//
+// So when PURULIA song ends, the next PURULIA song plays.
+// ------------------------------------------------------------
+
+let playingPlaylist = [];
+
+let playingCategory = null;
+
 let currentVideoId = null;
 
-
-// Current playing index inside the playlist being played
 let currentPlayingIndex = -1;
 
 
-// Prevent old category requests from updating the UI
+// ------------------------------------------------------------
+// REQUEST CONTROL
+// ------------------------------------------------------------
+
 let playlistRequestID = 0;
 
 
-// Cache successfully loaded playlists
+// ------------------------------------------------------------
+// CACHE
+// ------------------------------------------------------------
+
 const playlistCache = {};
-
-
-// Temporary loader player
-let playlistLoader = null;
 
 
 // ============================================================
@@ -142,19 +151,17 @@ function updateCategoryUI() {
 
     });
 
-
     if (playlistTitle) {
 
         playlistTitle.textContent =
             PLAYLIST_TITLES[currentCategory];
 
     }
-
 }
 
 
 // ============================================================
-// CATEGORY BUTTON EVENTS
+// CATEGORY BUTTONS
 // ============================================================
 
 categoryButtons.forEach(function (button) {
@@ -163,10 +170,9 @@ categoryButtons.forEach(function (button) {
         "click",
         function () {
 
-            const category =
-                button.dataset.category;
-
-            switchCategory(category);
+            switchCategory(
+                button.dataset.category
+            );
 
         }
     );
@@ -180,7 +186,6 @@ categoryButtons.forEach(function (button) {
 
 function loadYouTubeAPI() {
 
-    // Already available
     if (
         window.YT &&
         window.YT.Player
@@ -189,11 +194,8 @@ function loadYouTubeAPI() {
         createMainPlayer();
 
         return;
-
     }
 
-
-    // Already loading
     if (
         document.getElementById(
             "youtube-api-script"
@@ -201,30 +203,22 @@ function loadYouTubeAPI() {
     ) {
 
         return;
-
     }
-
 
     const script =
         document.createElement("script");
 
-
     script.id =
         "youtube-api-script";
-
 
     script.src =
         "https://www.youtube.com/iframe_api";
 
-
-    script.async =
-        true;
-
+    script.async = true;
 
     document.head.appendChild(
         script
     );
-
 }
 
 
@@ -241,7 +235,7 @@ window.onYouTubeIframeAPIReady =
 
 
 // ============================================================
-// CREATE MAIN MUSIC PLAYER
+// CREATE MAIN PLAYER
 // ============================================================
 
 function createMainPlayer() {
@@ -250,22 +244,17 @@ function createMainPlayer() {
         return;
     }
 
-
     if (
         !window.YT ||
         !window.YT.Player
     ) {
-
         return;
-
     }
-
 
     const youtubeElement =
         document.getElementById(
             "youtube-player"
         );
-
 
     if (!youtubeElement) {
 
@@ -274,35 +263,23 @@ function createMainPlayer() {
         );
 
         return;
-
     }
-
 
     player =
         new YT.Player(
             "youtube-player",
             {
-
                 width: "1",
                 height: "1",
 
                 playerVars: {
-
                     autoplay: 0,
-
                     controls: 0,
-
                     rel: 0,
-
-                    playsinline: 1,
-
-                    origin:
-                        window.location.origin
-
+                    playsinline: 1
                 },
 
                 events: {
-
                     onReady:
                         onMainPlayerReady,
 
@@ -311,12 +288,9 @@ function createMainPlayer() {
 
                     onError:
                         onMainPlayerError
-
                 }
-
             }
         );
-
 }
 
 
@@ -326,21 +300,13 @@ function createMainPlayer() {
 
 function onMainPlayerReady() {
 
-    youtubeReady =
-        true;
-
+    youtubeReady = true;
 
     updateCategoryUI();
-
-
-    // Load first visible playlist.
-    // This uses the separate loader,
-    // NOT the main music player.
 
     loadCategoryPlaylist(
         currentCategory
     );
-
 }
 
 
@@ -354,7 +320,6 @@ function playerReady() {
         youtubeReady &&
         player !== null
     );
-
 }
 
 
@@ -368,64 +333,60 @@ function onMainPlayerStateChange(event) {
         return;
     }
 
-
     const state =
         event.data;
 
 
+    // ========================================================
     // PLAYING
+    // ========================================================
+
     if (
         state ===
         YT.PlayerState.PLAYING
     ) {
 
-        isPlaying =
-            true;
-
+        isPlaying = true;
 
         if (playBtn) {
-
             playBtn.textContent =
                 "❚❚";
-
         }
-
 
         updateCurrentVideoId();
 
-
         updateSongInformation();
-
 
         updateActiveSong();
 
     }
 
 
+    // ========================================================
     // PAUSED
+    // ========================================================
+
     else if (
         state ===
         YT.PlayerState.PAUSED
     ) {
 
-        isPlaying =
-            false;
-
+        isPlaying = false;
 
         if (playBtn) {
-
             playBtn.textContent =
                 "▶";
-
         }
-
 
         updateActiveSong();
 
     }
 
 
+    // ========================================================
     // BUFFERING
+    // ========================================================
+
     else if (
         state ===
         YT.PlayerState.BUFFERING
@@ -436,33 +397,32 @@ function onMainPlayerStateChange(event) {
     }
 
 
+    // ========================================================
     // ENDED
+    // ========================================================
+
     else if (
         state ===
         YT.PlayerState.ENDED
     ) {
 
-        isPlaying =
-            false;
+        /*
+         * IMPORTANT:
+         *
+         * Do NOT simply set isPlaying=false.
+         *
+         * Play the next song from the
+         * playlist that is actually playing.
+         */
 
-
-        if (playBtn) {
-
-            playBtn.textContent =
-                "▶";
-
-        }
-
-
-        updateActiveSong();
+        playNextSongAutomatically();
 
     }
-
 }
 
 
 // ============================================================
-// MAIN PLAYER ERROR
+// YOUTUBE ERROR
 // ============================================================
 
 function onMainPlayerError(event) {
@@ -471,7 +431,6 @@ function onMainPlayerError(event) {
         "YouTube player error:",
         event.data
     );
-
 }
 
 
@@ -489,7 +448,6 @@ if (playBtn) {
                 return;
             }
 
-
             if (isPlaying) {
 
                 player.pauseVideo();
@@ -502,7 +460,6 @@ if (playBtn) {
 
         }
     );
-
 }
 
 
@@ -520,14 +477,11 @@ if (volumeBtn) {
                 return;
             }
 
-
             if (isMuted) {
 
                 player.unMute();
 
-                isMuted =
-                    false;
-
+                isMuted = false;
 
                 volumeBtn.textContent =
                     "🔊";
@@ -536,9 +490,7 @@ if (volumeBtn) {
 
                 player.mute();
 
-                isMuted =
-                    true;
-
+                isMuted = true;
 
                 volumeBtn.textContent =
                     "🔇";
@@ -547,7 +499,6 @@ if (volumeBtn) {
 
         }
     );
-
 }
 
 
@@ -555,18 +506,17 @@ if (volumeBtn) {
 // CATEGORY SWITCH
 // ============================================================
 //
-// THIS FUNCTION DOES NOT TOUCH THE MAIN PLAYER.
+// IMPORTANT:
 //
-// Therefore:
+// The MAIN MUSIC PLAYER is NOT touched.
 //
-// PURULIA song playing
-//        ↓
-// click OLD SONGS
-//        ↓
-// OLD playlist appears
-//        ↓
-// PURULIA song keeps playing
+// No:
+//     player.stopVideo()
+//     player.pauseVideo()
+//     player.cuePlaylist()
+//     player.loadPlaylist()
 //
+// Therefore current song keeps playing.
 // ============================================================
 
 function switchCategory(category) {
@@ -579,9 +529,7 @@ function switchCategory(category) {
         );
 
         return;
-
     }
-
 
     if (
         category ===
@@ -589,14 +537,12 @@ function switchCategory(category) {
     ) {
 
         return;
-
     }
 
 
     console.log(
         "================================"
     );
-
 
     console.log(
         "CATEGORY:",
@@ -605,11 +551,14 @@ function switchCategory(category) {
         category
     );
 
-
     console.log(
-        "CURRENT MUSIC WILL CONTINUE"
+        "CURRENT MUSIC CONTINUES"
     );
 
+    console.log(
+        "PLAYING CATEGORY:",
+        playingCategory
+    );
 
     console.log(
         "================================"
@@ -622,17 +571,11 @@ function switchCategory(category) {
         category;
 
 
-    // New request ID
-
     playlistRequestID++;
 
 
-    // Update navigation
-
     updateCategoryUI();
 
-
-    // Show loading
 
     if (playlistItems) {
 
@@ -654,7 +597,7 @@ function switchCategory(category) {
     }
 
 
-    // If already cached, show immediately
+    // Use cache when available
 
     if (
         playlistCache[category] &&
@@ -666,22 +609,24 @@ function switchCategory(category) {
         );
 
         return;
-
     }
 
 
-    // Otherwise load it using
-    // a temporary separate YouTube player
+    // Load only the visible playlist
 
     loadCategoryPlaylist(
         category
     );
-
 }
 
 
 // ============================================================
 // LOAD CATEGORY PLAYLIST
+// ============================================================
+//
+// This creates a temporary invisible YouTube player.
+//
+// It NEVER controls the main music player.
 // ============================================================
 
 function loadCategoryPlaylist(category) {
@@ -703,7 +648,6 @@ function loadCategoryPlaylist(category) {
         );
 
         return;
-
     }
 
 
@@ -717,6 +661,7 @@ function loadCategoryPlaylist(category) {
 
     console.log(
         "LOADING PLAYLIST:",
+        category,
         playlistID
     );
 
@@ -724,7 +669,6 @@ function loadCategoryPlaylist(category) {
     createTemporaryPlaylistLoader(
         function (loader) {
 
-            // Ignore if user changed category
             if (
                 requestID !==
                 playlistRequestID
@@ -733,15 +677,10 @@ function loadCategoryPlaylist(category) {
                 destroyPlaylistLoader();
 
                 return;
-
             }
 
 
             try {
-
-                // IMPORTANT:
-                // This affects ONLY the temporary loader.
-                // It never touches the music player.
 
                 loader.cuePlaylist({
 
@@ -759,22 +698,18 @@ function loadCategoryPlaylist(category) {
 
                 });
 
-            }
-
-            catch (error) {
+            } catch (error) {
 
                 console.error(
                     "Playlist cue error:",
                     error
                 );
 
-
                 destroyPlaylistLoader();
 
                 showPlaylistError();
 
                 return;
-
             }
 
 
@@ -787,7 +722,6 @@ function loadCategoryPlaylist(category) {
 
         }
     );
-
 }
 
 
@@ -799,7 +733,6 @@ function createTemporaryPlaylistLoader(
     callback
 ) {
 
-    // Destroy any previous loader first.
     destroyPlaylistLoader();
 
 
@@ -809,7 +742,9 @@ function createTemporaryPlaylistLoader(
 
 
     const element =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
     element.id =
@@ -857,11 +792,8 @@ function createTemporaryPlaylistLoader(
                     playerVars: {
 
                         autoplay: 0,
-
                         controls: 0,
-
                         rel: 0,
-
                         playsinline: 1
 
                     },
@@ -892,24 +824,18 @@ function createTemporaryPlaylistLoader(
                 }
             );
 
-    }
-
-    catch (error) {
+    } catch (error) {
 
         console.error(
-            "Could not create playlist loader:",
+            "Playlist loader creation error:",
             error
         );
 
-
         element.remove();
-
 
         playlistLoader =
             null;
-
     }
-
 }
 
 
@@ -924,7 +850,6 @@ function checkTemporaryPlaylist(
     attempt
 ) {
 
-    // User changed category
     if (
         requestID !==
         playlistRequestID
@@ -933,11 +858,9 @@ function checkTemporaryPlaylist(
         destroyPlaylistLoader();
 
         return;
-
     }
 
 
-    // Give up
     if (
         attempt >= 35
     ) {
@@ -947,22 +870,17 @@ function checkTemporaryPlaylist(
             category
         );
 
-
         destroyPlaylistLoader();
-
 
         showPlaylistError();
 
-
         return;
-
     }
 
 
     setTimeout(
         function () {
 
-            // New request
             if (
                 requestID !==
                 playlistRequestID
@@ -971,7 +889,6 @@ function checkTemporaryPlaylist(
                 destroyPlaylistLoader();
 
                 return;
-
             }
 
 
@@ -984,9 +901,7 @@ function checkTemporaryPlaylist(
                     loader.getPlaylist() ||
                     [];
 
-            }
-
-            catch (error) {
+            } catch {
 
                 list = [];
 
@@ -1007,13 +922,13 @@ function checkTemporaryPlaylist(
                 list.length > 0
             ) {
 
-                // Cache it
+                // Cache playlist
 
                 playlistCache[category] =
                     list.slice();
 
 
-                // Display it
+                // Display playlist
 
                 displayPlaylist(
                     list
@@ -1021,13 +936,10 @@ function checkTemporaryPlaylist(
 
 
                 // Remove temporary loader
-                // after successful read
 
                 destroyPlaylistLoader();
 
-
                 return;
-
             }
 
 
@@ -1041,7 +953,6 @@ function checkTemporaryPlaylist(
         },
         350
     );
-
 }
 
 
@@ -1061,15 +972,8 @@ function destroyPlaylistLoader() {
 
             playlistLoader.destroy();
 
-        }
-
-        catch (error) {
-
-            console.log(
-                "Loader destroy error:",
-                error
-            );
-
+        } catch {
+            // Ignore destroy error
         }
 
     }
@@ -1079,20 +983,17 @@ function destroyPlaylistLoader() {
         null;
 
 
-    const loaders =
-        document.querySelectorAll(
+    document
+        .querySelectorAll(
             '[id^="playlist-loader-"]'
+        )
+        .forEach(
+            function (element) {
+
+                element.remove();
+
+            }
         );
-
-
-    loaders.forEach(
-        function (element) {
-
-            element.remove();
-
-        }
-    );
-
 }
 
 
@@ -1142,7 +1043,6 @@ function displayPlaylist(
 
 
     updateActiveSong();
-
 }
 
 
@@ -1173,7 +1073,9 @@ function createPlaylistSong(
         videoID;
 
 
-    // Number
+    // ========================================================
+    // NUMBER
+    // ========================================================
 
     const number =
         document.createElement(
@@ -1194,7 +1096,9 @@ function createPlaylistSong(
         );
 
 
-    // Details
+    // ========================================================
+    // DETAILS
+    // ========================================================
 
     const details =
         document.createElement(
@@ -1244,7 +1148,9 @@ function createPlaylistSong(
     );
 
 
-    // Play icon
+    // ========================================================
+    // PLAY ICON
+    // ========================================================
 
     const play =
         document.createElement(
@@ -1260,7 +1166,9 @@ function createPlaylistSong(
         "▶";
 
 
-    // Add
+    // ========================================================
+    // APPEND
+    // ========================================================
 
     item.appendChild(
         number
@@ -1283,7 +1191,7 @@ function createPlaylistSong(
 
 
     // ========================================================
-    // CLICK SONG
+    // SONG CLICK
     // ========================================================
 
     item.addEventListener(
@@ -1304,19 +1212,25 @@ function createPlaylistSong(
     );
 
 
-    // Load title
+    // ========================================================
+    // GET TITLE / ARTIST
+    // ========================================================
 
     getVideoInformation(
         videoID,
         title,
         artist
     );
-
 }
 
 
 // ============================================================
-// PLAY SONG
+// PLAY SELECTED SONG
+// ============================================================
+//
+// This is where the "currently playing playlist"
+// is saved.
+//
 // ============================================================
 
 function playSong(index) {
@@ -1332,12 +1246,34 @@ function playSong(index) {
     ) {
 
         return;
-
     }
 
 
     const videoID =
         currentPlaylist[index];
+
+
+    if (!videoID) {
+        return;
+    }
+
+
+    // --------------------------------------------------------
+    // IMPORTANT
+    // --------------------------------------------------------
+    //
+    // Save the playlist that this song belongs to.
+    //
+    // Later, even if the user changes the navigation,
+    // automatic NEXT will continue from this playlist.
+    // --------------------------------------------------------
+
+    playingPlaylist =
+        currentPlaylist.slice();
+
+
+    playingCategory =
+        currentCategory;
 
 
     currentPlayingIndex =
@@ -1349,14 +1285,15 @@ function playSong(index) {
 
 
     console.log(
-        "PLAY SONG:",
+        "PLAYING:",
+        playingCategory,
+        "song:",
         index + 1,
         videoID
     );
 
 
-    // Only an explicit song click
-    // changes the main music player.
+    // Start selected video
 
     player.loadVideoById(
         {
@@ -1384,9 +1321,303 @@ function playSong(index) {
 
     updateActiveSong();
 
+    updateSongInformation();
+}
+
+
+// ============================================================
+// AUTO NEXT
+// ============================================================
+//
+// This is the fix for:
+// "next song doesn't play automatically"
+//
+// It uses PLAYING playlist,
+// NOT the currently displayed playlist.
+//
+// ============================================================
+
+function playNextSongAutomatically() {
+
+    if (!playerReady()) {
+        return;
+    }
+
+
+    if (
+        playingPlaylist.length ===
+        0
+    ) {
+
+        isPlaying =
+            false;
+
+
+        if (playBtn) {
+
+            playBtn.textContent =
+                "▶";
+
+        }
+
+
+        return;
+    }
+
+
+    const nextIndex =
+        currentPlayingIndex + 1;
+
+
+    // End of playlist
+    if (
+        nextIndex >=
+        playingPlaylist.length
+    ) {
+
+        isPlaying =
+            false;
+
+
+        currentPlayingIndex =
+            -1;
+
+
+        if (playBtn) {
+
+            playBtn.textContent =
+                "▶";
+
+        }
+
+
+        updateActiveSong();
+
+        return;
+    }
+
+
+    const nextVideoID =
+        playingPlaylist[nextIndex];
+
+
+    if (!nextVideoID) {
+        return;
+    }
+
+
+    currentPlayingIndex =
+        nextIndex;
+
+
+    currentVideoId =
+        nextVideoID;
+
+
+    console.log(
+        "AUTO NEXT:",
+        playingCategory,
+        "song:",
+        nextIndex + 1
+    );
+
+
+    player.loadVideoById(
+        {
+            videoId:
+                nextVideoID,
+
+            startSeconds:
+                0
+
+        }
+    );
+
+
+    isPlaying =
+        true;
+
+
+    if (playBtn) {
+
+        playBtn.textContent =
+            "❚❚";
+
+    }
+
+
+    updateActiveSong();
 
     updateSongInformation();
+}
 
+
+// ============================================================
+// MANUAL NEXT
+// ============================================================
+//
+// Manual Next uses the playlist that is ACTUALLY playing.
+// Not the playlist currently displayed.
+// ============================================================
+
+if (nextBtn) {
+
+    nextBtn.addEventListener(
+        "click",
+        function () {
+
+            if (!playerReady()) {
+                return;
+            }
+
+
+            if (
+                playingPlaylist.length ===
+                0
+            ) {
+
+                return;
+            }
+
+
+            const nextIndex =
+                currentPlayingIndex + 1;
+
+
+            if (
+                nextIndex >=
+                playingPlaylist.length
+            ) {
+
+                return;
+            }
+
+
+            const nextVideoID =
+                playingPlaylist[nextIndex];
+
+
+            currentPlayingIndex =
+                nextIndex;
+
+
+            currentVideoId =
+                nextVideoID;
+
+
+            player.loadVideoById(
+                {
+                    videoId:
+                        nextVideoID,
+
+                    startSeconds:
+                        0
+
+                }
+            );
+
+
+            isPlaying =
+                true;
+
+
+            if (playBtn) {
+
+                playBtn.textContent =
+                    "❚❚";
+
+            }
+
+
+            updateActiveSong();
+
+            updateSongInformation();
+
+        }
+    );
+}
+
+
+// ============================================================
+// MANUAL PREVIOUS
+// ============================================================
+
+if (previousBtn) {
+
+    previousBtn.addEventListener(
+        "click",
+        function () {
+
+            if (!playerReady()) {
+                return;
+            }
+
+
+            if (
+                playingPlaylist.length ===
+                0
+            ) {
+
+                return;
+            }
+
+
+            const previousIndex =
+                currentPlayingIndex - 1;
+
+
+            if (
+                previousIndex < 0
+            ) {
+
+                return;
+            }
+
+
+            const previousVideoID =
+                playingPlaylist[
+                    previousIndex
+                ];
+
+
+            currentPlayingIndex =
+                previousIndex;
+
+
+            currentVideoId =
+                previousVideoID;
+
+
+            player.loadVideoById(
+                {
+                    videoId:
+                        previousVideoID,
+
+                    startSeconds:
+                        0
+
+                }
+            );
+
+
+            isPlaying =
+                true;
+
+
+            if (playBtn) {
+
+                playBtn.textContent =
+                    "❚❚";
+
+            }
+
+
+            updateActiveSong();
+
+            updateSongInformation();
+
+        }
+    );
 }
 
 
@@ -1456,7 +1687,6 @@ function getVideoInformation(
 
             }
         );
-
 }
 
 
@@ -1486,8 +1716,11 @@ function updateCurrentVideoId() {
                 data.video_id;
 
 
+            // Find index inside the playlist
+            // that is actually playing.
+
             const index =
-                currentPlaylist.indexOf(
+                playingPlaylist.indexOf(
                     currentVideoId
                 );
 
@@ -1503,19 +1736,14 @@ function updateCurrentVideoId() {
 
         }
 
-    }
-
-    catch (error) {
-
+    } catch {
         return;
-
     }
-
 }
 
 
 // ============================================================
-// UPDATE SONG INFO
+// UPDATE SONG INFORMATION
 // ============================================================
 
 function updateSongInformation() {
@@ -1553,14 +1781,9 @@ function updateSongInformation() {
 
         }
 
-    }
-
-    catch (error) {
-
+    } catch {
         return;
-
     }
-
 }
 
 
@@ -1582,10 +1805,7 @@ function updateActiveSong() {
 
 
     songs.forEach(
-        function (
-            song,
-            index
-        ) {
+        function (song) {
 
             const button =
                 song.querySelector(
@@ -1593,17 +1813,17 @@ function updateActiveSong() {
                 );
 
 
-            const songVideoID =
+            const videoID =
                 song.dataset.videoId;
 
 
-            const isCurrent =
+            const active =
                 isPlaying &&
-                songVideoID ===
+                videoID ===
                 currentVideoId;
 
 
-            if (isCurrent) {
+            if (active) {
 
                 song.classList.add(
                     "active"
@@ -1635,106 +1855,6 @@ function updateActiveSong() {
 
         }
     );
-
-}
-
-
-// ============================================================
-// NEXT
-// ============================================================
-
-if (nextBtn) {
-
-    nextBtn.addEventListener(
-        "click",
-        function () {
-
-            if (!playerReady()) {
-                return;
-            }
-
-
-            if (
-                currentPlaylist.length ===
-                0
-            ) {
-
-                return;
-
-            }
-
-
-            let nextIndex =
-                currentPlayingIndex + 1;
-
-
-            if (
-                nextIndex >=
-                currentPlaylist.length
-            ) {
-
-                nextIndex =
-                    0;
-
-            }
-
-
-            playSong(
-                nextIndex
-            );
-
-        }
-    );
-
-}
-
-
-// ============================================================
-// PREVIOUS
-// ============================================================
-
-if (previousBtn) {
-
-    previousBtn.addEventListener(
-        "click",
-        function () {
-
-            if (!playerReady()) {
-                return;
-            }
-
-
-            if (
-                currentPlaylist.length ===
-                0
-            ) {
-
-                return;
-
-            }
-
-
-            let previousIndex =
-                currentPlayingIndex - 1;
-
-
-            if (
-                previousIndex < 0
-            ) {
-
-                previousIndex =
-                    currentPlaylist.length - 1;
-
-            }
-
-
-            playSong(
-                previousIndex
-            );
-
-        }
-    );
-
 }
 
 
@@ -1765,7 +1885,6 @@ function updateProgress() {
         ) {
 
             return;
-
         }
 
 
@@ -1773,7 +1892,8 @@ function updateProgress() {
             (
                 current /
                 duration
-            ) * 100;
+            ) *
+            100;
 
 
         if (progressBar) {
@@ -1807,14 +1927,9 @@ function updateProgress() {
 
         }
 
-    }
-
-    catch (error) {
-
+    } catch {
         return;
-
     }
-
 }
 
 
@@ -1855,12 +1970,11 @@ function formatTime(seconds) {
             "0"
         )
     );
-
 }
 
 
 // ============================================================
-// PROGRESS CLICK
+// SEEK
 // ============================================================
 
 if (progress) {
@@ -1876,6 +1990,14 @@ if (progress) {
 
             const rect =
                 progress.getBoundingClientRect();
+
+
+            if (
+                rect.width <= 0
+            ) {
+
+                return;
+            }
 
 
             const percentage =
@@ -1902,7 +2024,6 @@ if (progress) {
             ) {
 
                 return;
-
             }
 
 
@@ -1914,7 +2035,6 @@ if (progress) {
 
         }
     );
-
 }
 
 
@@ -1936,7 +2056,6 @@ document.addEventListener(
         ) {
 
             return;
-
         }
 
 
@@ -1968,6 +2087,9 @@ document.addEventListener(
 
             if (playerReady()) {
 
+                event.preventDefault();
+
+
                 player.seekTo(
                     Math.max(
                         0,
@@ -1990,6 +2112,9 @@ document.addEventListener(
         ) {
 
             if (playerReady()) {
+
+                event.preventDefault();
+
 
                 const duration =
                     player.getDuration();
@@ -2096,7 +2221,7 @@ if (
 
 
 // ============================================================
-// STATUS
+// ERROR DISPLAY
 // ============================================================
 
 function showPlaylistError() {
@@ -2119,7 +2244,6 @@ function showPlaylistError() {
             "ERROR";
 
     }
-
 }
 
 
@@ -2128,31 +2252,19 @@ function showPlaylistError() {
 // ============================================================
 
 setInterval(
-    function () {
-
-        updateProgress();
-
-    },
+    updateProgress,
     500
 );
 
 
 setInterval(
-    function () {
-
-        updateSongInformation();
-
-    },
+    updateSongInformation,
     1500
 );
 
 
 setInterval(
-    function () {
-
-        updateActiveSong();
-
-    },
+    updateActiveSong,
     1000
 );
 
