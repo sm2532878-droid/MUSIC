@@ -2,74 +2,145 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Music</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
     <!-- GSAP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
+    </script>
+
 </head>
 
 <body>
 
 <div id="app">
 
-    <!-- =========================================
+
+    <!-- =====================================================
          TOP NAVIGATION
-    ========================================== -->
+    ====================================================== -->
 
     <nav class="top-nav">
 
         <button
             class="category-btn active"
-            data-category="trending">
+            data-category="trending"
+            type="button"
+        >
             PURULIA
         </button>
 
         <button
             class="category-btn"
-            data-category="old">
+            data-category="old"
+            type="button"
+        >
             OLD SONGS
         </button>
 
         <button
             class="category-btn"
-            data-category="new">
+            data-category="new"
+            type="button"
+        >
             NEW SONGS
         </button>
 
         <button
             class="category-btn"
-            data-category="dance">
+            data-category="dance"
+            type="button"
+        >
             DANCE SONGS
         </button>
 
         <button
             class="category-btn"
-            data-category="bengali">
+            data-category="bengali"
+            type="button"
+        >
             BENGALI SONGS
         </button>
 
     </nav>
 
 
-    <!-- =========================================
+    <!-- =====================================================
          HERO
-    ========================================== -->
+    ====================================================== -->
 
     <main class="hero">
 
         <div class="hero-content">
 
-            <!-- <div class="hero-rank" id="heroRank">
-            </div> -->
+
+            <!-- =================================================
+                 SINGLE ROUND MUSIC / VOLUME CONTROL
+            ================================================== -->
+
+            <div
+                class="hero-round-control"
+                id="heroRoundControl"
+                aria-label="Volume control"
+                title="Clockwise: volume up | Anti-clockwise: volume down"
+            >
+
+                <svg
+                    class="volume-ring"
+                    viewBox="0 0 100 100"
+                    aria-hidden="true"
+                >
+
+                    <!-- Faint full ring -->
+                    <circle
+                        class="volume-ring-track"
+                        cx="50"
+                        cy="50"
+                        r="43"
+                    ></circle>
+
+
+                    <!-- White volume ring -->
+                    <circle
+                        class="volume-ring-progress"
+                        id="volumeRingProgress"
+                        cx="50"
+                        cy="50"
+                        r="43"
+                    ></circle>
+
+                </svg>
+
+
+                <!-- ONLY ONE MUSIC ICON -->
+                <span class="hero-round-note">
+                    ♪
+                </span>
+
+            </div>
+
+
+            <!-- HERO TITLE -->
 
             <h1>
                 MUSIC
             </h1>
+
+
+            <!-- HERO SUBTITLE -->
 
             <p>
                 YOUR MUSIC JOURNEY
@@ -80,19 +151,21 @@
     </main>
 
 
-    <!-- =========================================
+    <!-- =====================================================
          PLAYLIST
-    ========================================== -->
+    ====================================================== -->
 
     <section
         class="playlist-panel"
-        id="playlistPanel">
+        id="playlistPanel"
+    >
 
-        <!-- Playlist Header -->
+        <!-- PLAYLIST HEADER -->
 
         <div
             class="playlist-header"
-            id="playlistHeader">
+            id="playlistHeader"
+        >
 
             <div>
 
@@ -110,12 +183,16 @@
             <div class="playlist-header-right">
 
                 <span id="playlistCount">
-                    23 TRACKS
+                    LOADING
                 </span>
+
 
                 <button
                     class="playlist-toggle"
-                    id="playlistToggle">
+                    id="playlistToggle"
+                    type="button"
+                    aria-label="Toggle playlist"
+                >
                     +
                 </button>
 
@@ -124,15 +201,17 @@
         </div>
 
 
-        <!-- Playlist Content -->
+        <!-- PLAYLIST CONTENT -->
 
         <div
             class="playlist-content"
-            id="playlistContent">
+            id="playlistContent"
+        >
 
             <div
                 class="playlist-items"
-                id="playlistItems">
+                id="playlistItems"
+            >
 
                 <div class="playlist-loading">
                     LOADING...
@@ -145,11 +224,16 @@
     </section>
 
 
-    <!-- =========================================
+    <!-- =====================================================
          MUSIC PLAYER
-    ========================================== -->
+    ====================================================== -->
 
-    <section class="music-player">
+    <section
+        class="music-player"
+        id="musicPlayer"
+    >
+
+        <!-- CURRENT SONG -->
 
         <div class="player-song">
 
@@ -157,17 +241,21 @@
                 ♪
             </div>
 
+
             <div class="player-info">
 
                 <div
                     id="trackTitle"
-                    class="player-title">
+                    class="player-title"
+                >
                     Music
                 </div>
 
+
                 <div
                     id="trackArtist"
-                    class="player-artist">
+                    class="player-artist"
+                >
                     YouTube Music
                 </div>
 
@@ -176,47 +264,77 @@
         </div>
 
 
+        <!-- PLAYER CONTROLS -->
+
         <div class="player-controls">
 
-            <button id="previousBtn">
+            <button
+                id="previousBtn"
+                type="button"
+                aria-label="Previous song"
+            >
                 ◀
             </button>
 
+
             <button
                 id="playBtn"
-                class="main-play">
+                class="main-play"
+                type="button"
+                aria-label="Play or pause"
+            >
                 ▶
             </button>
 
-            <button id="nextBtn">
+
+            <button
+                id="nextBtn"
+                type="button"
+                aria-label="Next song"
+            >
                 ▶
             </button>
 
-            <button id="volumeBtn">
+
+            <button
+                id="volumeBtn"
+                type="button"
+                aria-label="Mute or unmute"
+            >
                 🔊
             </button>
 
         </div>
-        <!-- VISUALIZER -->
-<div class="visualizer" id="visualizer">
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-</div>
 
+
+        <!-- VISUALIZER -->
+
+        <div
+            class="visualizer"
+            id="visualizer"
+            aria-hidden="true"
+        >
+
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </div>
+
+
+        <!-- PROGRESS -->
 
         <div class="progress-area">
 
@@ -224,16 +342,19 @@
                 00:00
             </span>
 
+
             <div
                 class="progress"
-                id="progress">
+                id="progress"
+            >
 
                 <div
                     class="progress-bar"
-                    id="progressBar">
-                </div>
+                    id="progressBar"
+                ></div>
 
             </div>
+
 
             <span id="duration">
                 00:00
@@ -244,28 +365,34 @@
     </section>
 
 
-    <!-- =========================================
+    <!-- =====================================================
          HIDDEN YOUTUBE PLAYER
-    ========================================== -->
+    ====================================================== -->
 
-  <div id="youtube-player" class="youtube-player"></div>
+    <div
+        id="youtube-player"
+        class="youtube-player"
+    ></div>
 
-<div id="playlist-loader" class="youtube-player"></div>
 
-
-    <!-- =========================================
+    <!-- =====================================================
          STATUS
-    ========================================== -->
+    ====================================================== -->
 
     <div
         id="status"
-        class="status">
-    </div>
+        class="status"
+    ></div>
 
 </div>
 
 
+<!-- =========================================================
+     JAVASCRIPT
+========================================================== -->
+
 <script src="script.js"></script>
 
 </body>
+
 </html>
