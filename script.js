@@ -12,7 +12,8 @@ const PLAYLISTS = {
     old: "PLB-99MR-0VKY",
     new: "PLBMHGcJH7xRA",
     dance: "PLUmcJYD1Bzqg",
-    bengali: "PLNi1KdnHfick"
+    bengali: "PLNi1KdnHfick",
+    bhakti: "PLEUpLmpLnPqA"
 };
 
 const PLAYLIST_TITLES = {
@@ -20,7 +21,8 @@ const PLAYLIST_TITLES = {
     old: "OLD SONGS",
     new: "NEW SONGS",
     dance: "DANCE SONGS",
-    bengali: "BENGALI SONGS"
+    bengali: "BENGALI SONGS",
+    bhakti: "BHAKTI SANGEET"
 };
 
 
